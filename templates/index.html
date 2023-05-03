@@ -58,7 +58,7 @@
                 dataType: 'json',
                 success: function(response) {
                     // Display the response in the div
-                    alert(response.result);
+                    $('#message-from-bot').val(response.message)
                 },
                 error: function(xhr) {
 

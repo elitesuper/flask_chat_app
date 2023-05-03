@@ -1,5 +1,5 @@
 from flask import Flask, render_template, jsonify, request
-
+from generate import generate_message
 app = Flask(__name__)
 
 @app.route("/")
@@ -10,10 +10,12 @@ def hello_world():
 def sendMessage():
     data = request.get_json()
 
-    print(data)
+    response_message = generate_message(data['data'])
 
+    
     response = {
-        'result' : 'success'
+        'result' : 'success',
+        'message' : response_message
     }
     return jsonify(response)
 
