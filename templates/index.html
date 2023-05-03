@@ -3,6 +3,7 @@
 <head>
     <title>Example Form</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 <body>
     <div class="max-w-7xl mx-auto mt-8 p-2">
@@ -11,14 +12,14 @@
             <div class="w-full md:w-1/2 p-2">
                 <div class="mx-auto p-6 bg-white border border-gray-200 rounded-lg shadow">
                     <form class="space-y-6">
-                        <label for="message" class="block mb-2 text-sm font-medium text-gray-900">Message to AI</label>
-                        <textarea id="message" rows="4" class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500" placeholder="Write your thoughts here..."></textarea>
+                        <label for="message-to-bot" class="block mb-2 text-sm font-medium text-gray-900">Message to AI</label>
+                        <textarea id="message-to-bot" name="message-to-bot" rows="4" class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500" placeholder="Write your thoughts here..."></textarea>
                     </form>
                     <div class="mt-2 w-full flex justify-around">
-                        <button type="button" class="w-24 lg:w-48 items-center px-3 py-2 text-sm font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300">
+                        <button type="button" id="generate-btn" class="w-24 lg:w-48 items-center px-3 py-2 text-sm font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300">
                             Generate
                         </button>
-                        <button type="button" class="w-24 lg:w-48 items-center px-3 py-2 text-sm font-medium text-center text-white bg-green-700 rounded-lg hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-green-300">
+                        <button type="button" id="clear-btn" class="w-24 lg:w-48 items-center px-3 py-2 text-sm font-medium text-center text-white bg-green-700 rounded-lg hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-green-300">
                             Clear
                         </button>
                     </div>
@@ -27,12 +28,49 @@
             <div class="w-full md:w-1/2 p-2">
                 <div class="mx-auto p-6 bg-white border border-gray-200 rounded-lg shadow">
                     <form class="space-y-6">
-                        <label for="message" class="block mb-2 text-sm font-medium text-gray-900">Respose of AI</label>
-                        <textarea id="message" rows="4" class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500" placeholder="Write your thoughts here..."></textarea>
+                        <label for="message-from-bot" class="block mb-2 text-sm font-medium text-gray-900">Respose of AI</label>
+                        <textarea id="message-from-bot" rows="4" class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500" placeholder="Write your thoughts here..."></textarea>
                     </form>
+                    <div class="mt-2 w-full flex justify-around">
+                        <button type="button" id="tag-btn" name="message-from-bot" class="w-full items-center px-3 py-2 text-sm font-medium text-center text-white bg-black rounded-lg hover:bg-black focus:ring-4 focus:outline-none focus:ring-black-300">
+                            Tags
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 </body>
+<script>
+    $(document).ready(function(){
+        $('#generate-btn').click(function(){
+            var message = $('#message-to-bot').val()
+            if(message==null || message.trim() == ""){
+                alert("Message is empty please input any message.")
+                return;
+            }
+
+            $.ajax({
+                url: '/send_message',
+                type: 'POST',
+                data: JSON.stringify({data: message}),
+                contentType: 'application/json; charset=utf-8',
+                dataType: 'json',
+                success: function(response) {
+                    // Display the response in the div
+                    alert(response.result);
+                },
+                error: function(xhr) {
+
+                    // Display an error message if the request fails
+                    alert('Error: ' + xhr.responseText);
+                }
+            });
+        })
+
+        $('#clear-btn').click(function(){
+            $('#message-to-bot').val('')
+        })
+    })
+</script>
 </html>
